@@ -41,9 +41,9 @@ $ go test
 develop and publish new version of gogis
 
 ```
-$ git tag v0.1.0
+$ git tag v0.1.2
 $ git push origin --tags
-$ go list -m github.com/mitchallen/go-lib@v0.1.0
+$ go list -m github.com/awangga/gogis@v0.1.2
 ```
 ## Environment
 Setting up environment
