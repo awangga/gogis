@@ -10,5 +10,5 @@ import (
 )
 
 func init() {
-	fmt.Println("[go-lib] initializing ...")
+	fmt.Println("[gogis] initializing ...")
 }
