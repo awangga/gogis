@@ -6,6 +6,7 @@
 package gogis
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -27,4 +28,12 @@ func TestSubtract(t *testing.T) {
 	if got := Subtract(a, b); got != expected {
 		t.Errorf("Subtract(%d, %d) = %d, didn't return %d", a, b, got, expected)
 	}
+}
+
+func TestGetPublicIP(t *testing.T) {
+	notfound := -1
+	if got := strings.Index(GetPublicIP(), "{"); got <= notfound {
+		t.Errorf("Response Body : %d, didn't return json", got)
+	}
+
 }
