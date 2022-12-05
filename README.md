@@ -38,8 +38,16 @@ $ go test
 ```
 
 ## Tagging
+develop and publish new version of gogis
 
 ```
 $ git tag v0.1.0
 $ git push origin --tags
+$ go list -m github.com/mitchallen/go-lib@v0.1.0
+```
+## Environment
+Setting up environment
+
+```
+GOPROXY=proxy.golang.org
 ```
