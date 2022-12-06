@@ -32,7 +32,7 @@ func TestSubtract(t *testing.T) {
 
 func TestGetPublicIP(t *testing.T) {
 	notfound := -1
-	if got := strings.Index(GetPublicIP(), "{"); got <= notfound {
+	if got := strings.Index(GetPublicIP().Query, "."); got <= notfound {
 		t.Errorf("Response Body : %d, didn't return json", got)
 	}
 
