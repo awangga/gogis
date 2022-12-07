@@ -6,9 +6,16 @@
 package gogis
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type IpApi struct {
@@ -25,6 +32,27 @@ type IpApi struct {
 	Org         string `json:"org,omitempty"`
 	As          string `json:"as,omitempty"`
 	Query       string `json:"query,omitempty"`
+}
+
+type Geometry struct {
+	Type        string      `json:"type" bson:"type"`
+	Coordinates interface{} `json:"coordinates" bson:"coordinates"`
+}
+
+type Desa struct {
+	ID           primitive.ObjectID `bson:"_id,omitempty"`
+	Province     string             `bson:"province,omitempty"`
+	District     string             `bson:"district,omitempty"`
+	Sub_district string             `bson:"sub_district,omitempty"`
+	Village      string             `bson:"village,omitempty"`
+	Border       Geometry           `bson:"border,omitempty"`
+}
+
+type MongoGeometry struct {
+	MongoString    string
+	DBName         string
+	CollectionName string
+	LocationField  string
 }
 
 // Returns the sum of two numbers
@@ -52,4 +80,32 @@ func GetPublicIP() IpApi {
 	var ip IpApi
 	json.Unmarshal(body, &ip)
 	return ip
+}
+
+func GetLocation(mongog MongoGeometry, long float64, lat float64) (loc interface{}) {
+	loccollection := MongoConnect(mongog.MongoString, mongog.DBName).Collection(mongog.CollectionName)
+	filter := bson.M{
+		mongog.LocationField: bson.M{
+			"$geoIntersects": bson.M{
+				"$geometry": bson.M{
+					"type":        "Point",
+					"coordinates": []float64{long, lat},
+				},
+			},
+		},
+	}
+	err := loccollection.FindOne(context.TODO(), filter).Decode(&loc)
+	if err != nil {
+		fmt.Printf("GetLocation: %v\n", err)
+	}
+	return loc
+
+}
+
+func MongoConnect(mongostring string, dbname string) (db *mongo.Database) {
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongostring))
+	if err != nil {
+		fmt.Printf("MongoConnect: %v\n", err)
+	}
+	return client.Database(dbname)
 }
