@@ -26,8 +26,13 @@ import (
 )
 
 func main() {
-    fmt.Println(gogis.Add(2,3))
-    fmt.Println(gogis.Subtract(2,3))
+    fmt.Println(GetPublicIP())
+    var db MongoGeometry
+	db.MongoString = "mongodb+srv://gogis:gogis@cluster0.wghp85v.mongodb.net/?retryWrites=true&w=majority"
+	db.DBName = "location"
+	db.CollectionName = "villages"
+	db.LocationField = "border"
+    fmt.Println(GetLocation(db, 107.57297533576039, -6.872079914985439))
 }
 ```
 
